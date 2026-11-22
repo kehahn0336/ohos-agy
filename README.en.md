@@ -91,6 +91,7 @@ Dependencies: `curl`, `tar`, `python3`, `/data/service/hnp/bin/binary-sign-tool`
 ohos-agy/
 ├── README.md                                  # Chinese (default)
 ├── README.en.md                               # this file
+├── NOTICE.md                                  # third-party / trademark notices
 ├── docs/                                      # Chinese only
 │   ├── port/                                  # how the port works (core)
 │   │   ├── 01-kernel-too-old.md
@@ -139,4 +140,4 @@ ohos-agy/
 
 ## License
 
-Code and documentation: MIT, see [LICENSE](LICENSE) (© 2026 kehahn).
+Code and documentation: MIT, see [LICENSE](LICENSE) (© 2026 kehahn). Third-party and trademark notices: [NOTICE](NOTICE.md).

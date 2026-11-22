@@ -139,4 +139,4 @@ ohos-agy/
 
 ## 许可
 
-代码与文档：MIT，见 [LICENSE](LICENSE)（© 2026 kehahn）。
+代码与文档：MIT，见 [LICENSE](LICENSE)（© 2026 kehahn）。第三方软件与商标说明见 [NOTICE](NOTICE.md)。
