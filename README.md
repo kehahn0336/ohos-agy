@@ -50,8 +50,9 @@ hello
 ## 安装
 
 ```sh
-bash scripts/install.sh          # 幂等；已安装会跳过下载
-bash scripts/install.sh --force  # 升级：下载最新版并重新打补丁+签名
+bash scripts/install.sh             # 幂等；已安装会跳过下载
+bash scripts/check-update.sh        # 只查有没有新版（不改动任何文件）
+bash scripts/install.sh --force     # 升级：下载最新版并重新打补丁+签名
 bash scripts/verify.sh           # 五项本地自检
 ```
 
@@ -65,6 +66,10 @@ bash scripts/verify.sh           # 五项本地自检
 6. 往 `~/.zshrc` 追加 PATH（已有则跳过）
 
 依赖：`curl`、`tar`、`python3`、`/data/service/hnp/bin/binary-sign-tool`（后两个鸿蒙 PC 自带）。
+
+`check-update.sh` 的退出码：`0` 已最新，`10` 有新版本，`2` 查询失败 —— 可以直接写进定时脚本。
+
+> ⚠️ 不要用 `agy update` 升级：它下载的是**官方未打补丁、未签名**的二进制，装完就起不来。升级只走 `install.sh --force`。
 
 ---
 
@@ -100,6 +105,7 @@ ohos-agy/
 │   └── agy-on-harmonyos.md                    # 早期方案：Linux 主机 + SSH（历史）
 ├── scripts/
 │   ├── install.sh
+│   ├── check-update.sh
 │   ├── verify.sh
 │   ├── repatch.py            # 按字符串自动定位补丁点
 │   └── probe_seccomp.py      # 枚举本机被 seccomp 拦截的 syscall

@@ -15,6 +15,15 @@
 | 命令“执行了”但无输出 | 0 | headless 下工具被软拒绝 | 确认带了 `--dangerously-skip-permissions` |
 | `No auth type is selected` / `Please sign in` | 1 | 未登录 | 跑一次 `agy`（不加参数），浏览器授权后把 code 粘回终端 |
 
+## 升级 agy
+
+只用仓库里的脚本，别用 `agy update`（会装回官方未签名版）：
+
+```sh
+bash scripts/check-update.sh        # 0=最新 10=有新版 2=查询失败
+bash scripts/install.sh --force     # 真正升级：下载→补丁→签名→启动器
+```
+
 ## 升级 agy 之后
 
 自动更新会覆盖补丁并破坏签名。稳妥做法：
