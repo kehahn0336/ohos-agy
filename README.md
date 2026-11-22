@@ -1,5 +1,9 @@
 # ohos-agy
 
+> **Unofficial port that makes Google Antigravity CLI (`agy`) run on HarmonyOS PC (aarch64).**
+> It patches the glibc kernel-version check inside the static Linux build, self-signs the binary, and works around HarmonyOS's seccomp ban on namespace clones. Verified on HarmonyOS PC with agy 1.5.14 — chat, file I/O, shell commands and a full HAP build all work.
+> Not affiliated with Google. Ships no Google binaries; `install.sh` downloads them from Google's own release endpoint.
+
 在 **HarmonyOS / OpenHarmony PC** 上运行 **Google Antigravity CLI（`agy`）** 的非官方移植工程。
 
 > **状态：可用。** 2026-11-22 实测（HarmonyOS PC / aarch64 / HongMeng Kernel 1.13.0 / agy **1.5.14**；1.5.13 亦验证过）：
