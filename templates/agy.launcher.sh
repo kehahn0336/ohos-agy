@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: MIT
 # agy 启动器（由 install.sh 安装到 ~/opt/bin/agy）
 #
 # 三点缺一不可：
@@ -9,4 +10,8 @@
 # 3) 二进制本身已 patch 掉 glibc 的 "kernel too old" 检查并自签名
 PATH="$HOME/opt/bin:$PATH"
 export PATH
+# 必须关自动更新：agy 会后台替换二进制，替换后既没打补丁也没签名，
+# 下次启动就是 "Permission denied"（实测踩过一次）
+AGY_CLI_DISABLE_AUTO_UPDATE=1
+export AGY_CLI_DISABLE_AUTO_UPDATE
 exec "$HOME/opt/agy/agy" --dangerously-skip-permissions "$@"

@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: MIT
 # ohos-agy 一键安装（HarmonyOS PC / aarch64）
 # 用法: bash scripts/install.sh [--force]
 set -eu

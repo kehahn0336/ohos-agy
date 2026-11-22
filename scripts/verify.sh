@@ -1,4 +1,5 @@
 #!/bin/sh
+# SPDX-License-Identifier: MIT
 # 安装后自检：不联网、不花钱，只查本地状态
 set -u
 
@@ -27,6 +28,11 @@ if grep -q -- "--dangerously-skip-permissions" "$LAUNCHER" 2>/dev/null; then
   ok "已带 --dangerously-skip-permissions"
 else
   warn "启动器没带该参数，执行命令会 SIGSYS"
+fi
+if grep -q "AGY_CLI_DISABLE_AUTO_UPDATE" "$LAUNCHER" 2>/dev/null; then
+  ok "已禁用自动更新"
+else
+  warn "未禁用自动更新：agy 后台更新会换成未签名二进制，下次启动即 Permission denied"
 fi
 
 echo "[3] bash"

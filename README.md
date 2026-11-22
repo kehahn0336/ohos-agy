@@ -2,14 +2,14 @@
 
 在 **HarmonyOS / OpenHarmony PC** 上运行 **Google Antigravity CLI（`agy`）** 的非官方移植工程。
 
-> **状态：可用。** 2026-11-20 实测（HarmonyOS PC / aarch64 / HongMeng Kernel 1.13.0 / agy 1.5.13）：
+> **状态：可用。** 2026-11-22 实测（HarmonyOS PC / aarch64 / HongMeng Kernel 1.13.0 / agy **1.5.14**；1.5.13 亦验证过）：
 > 对话、读写文件、执行 shell、全量构建 HAP 全部通过。
 
 ```sh
 cd ~/project/ohos-agy
 bash scripts/install.sh
 exec zsh
-agy --version      # 1.5.13
+agy --version      # 1.5.14
 ```
 
 ---
@@ -47,6 +47,7 @@ hello
 
 ```sh
 bash scripts/install.sh          # 幂等；已安装会跳过下载
+bash scripts/install.sh --force  # 升级：下载最新版并重新打补丁+签名
 bash scripts/verify.sh           # 五项本地自检
 ```
 
@@ -69,7 +70,7 @@ bash scripts/verify.sh           # 五项本地自检
 |---|---|
 | 沙箱隔离 | **不可用**。鸿蒙对 `clone(CLONE_NEW*)` 直接 SIGSYS，没有降级机会 |
 | 工具确认 | **全部免确认**（同一个开关控制，无法只关沙箱、保留确认） |
-| 自动更新 | **必须关闭**。agy 后台自更新会覆盖补丁并破坏签名；升级后重跑 `repatch.py` + 签名 |
+| 自动更新 | **必须关闭**（启动器已设 `AGY_CLI_DISABLE_AUTO_UPDATE=1`）。否则后台更新会替换成未签名二进制，下次启动直接 `Permission denied`（126） |
 | 平台判定 | 不影响。agy 是 Go 静态二进制，`GOOS=linux` 本来就对 |
 | 网络 | 需能连 `*.googleapis.com`；国内网络偶发 `EOF`，重试即可 |
 | 架构 | 仅 aarch64（鸿蒙 PC / 2in1） |
@@ -126,4 +127,4 @@ ohos-agy/
 
 ## 许可
 
-代码与文档：MIT，见 [LICENSE](LICENSE)。
+代码与文档：MIT，见 [LICENSE](LICENSE)（© 2026 kehahn）。

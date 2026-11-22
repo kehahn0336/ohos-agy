@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
 """为 agy (Antigravity CLI) 的 aarch64 Linux 版打鸿蒙内核版本补丁。
 
 原理：agy 静态链接的 glibc 在 __libc_start_main 里比对 uname release，

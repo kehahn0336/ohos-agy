@@ -5,6 +5,7 @@
 | 症状 | 退出码 | 原因 | 处理 |
 |---|---|---|---|
 | `FATAL: kernel too old` | 134 | 补丁没打上 / 被自动更新覆盖 | 重跑 `scripts/repatch.py` 再签名 |
+| 突然 `Permission denied`（126），版本号还变了 | 126 | **agy 后台自更新**把二进制换成了官方未签名版 | `bash scripts/install.sh --force` 重装；确认启动器带 `AGY_CLI_DISABLE_AUTO_UPDATE=1` |
 | `zsh: invalid system call (core dumped)` | 159 | 进了命名空间沙箱 | 用启动器（内含 `--dangerously-skip-permissions`） |
 | `run bash: fork/exec .../bundle/.../bash: permission denied` | 0（工具内失败） | PATH 里的 bash 在 HAP bundle 里 | 自签名 bash 放 `~/opt/bin` 并前置 PATH |
 | `Permission denied` 直接执行任何 ELF | 126 | 该 ELF 没签名 | `binary-sign-tool sign -selfSign 1` |

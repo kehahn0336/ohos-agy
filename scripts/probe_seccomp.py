@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: MIT
 """快速枚举本机 seccomp 白名单外的系统调用号（fork 探测，不 exec）。"""
 import ctypes
 import os
