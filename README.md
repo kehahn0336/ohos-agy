@@ -1,5 +1,7 @@
 # ohos-agy
 
+![license](assets/badges/license.svg) ![platform](assets/badges/platform.svg) ![agy](assets/badges/agy-version.svg)
+
 **简体中文** | [English](README.en.md)
 
 > 非官方移植。对 Google Antigravity CLI（`agy`）的静态 Linux 构建打补丁、自签名，绕过鸿蒙对命名空间克隆的 seccomp 封锁。
@@ -44,6 +46,23 @@ $ agy -p "运行 echo hello"
 Command exited with code 0.
 Command output:
 hello
+```
+
+---
+
+## 实测输出
+
+真实终端记录（agy 1.5.14 / 鸿蒙 PC / nextPDF 工程），不是示意：
+
+```console
+$ agy -p "在 app 目录执行一次构建（assembleHap），把结果告诉我"
+
+> ohpm install 完成（0s 120ms）
+> hvigor Finished :entry:assembleHap... after 1 ms
+> hvigor BUILD SUCCESSFUL in 3 s 244 ms
+  33 个任务：14 executed, 19 up-to-date
+
+产物：app/entry/build/default/outputs/default/entry-default-signed.hap (261 KB)
 ```
 
 ---
@@ -111,20 +130,53 @@ ohos-agy/
 │   ├── verify.sh
 │   ├── repatch.py            # 按字符串自动定位补丁点
 │   └── probe_seccomp.py      # 枚举本机被 seccomp 拦截的 syscall
-└── templates/
-    ├── agy.launcher.sh
-    └── zshrc.snippet
+├── templates/
+│   ├── agy.launcher.sh
+│   └── zshrc.snippet
+└── assets/badges/            # 本地 SVG 徽章（不依赖 shields.io）
 ```
 
 > 研究缓存（约 1.8 GB 的官方包体与解包产物）**不入库**，复现方法见 [evidence 文档](docs/evidence-antigravity-package.md)。
 
 ---
 
-## 已验证能力（nextPDF 工程实测）
+## 版本兼容性
+
+`repatch.py` 按字符串定位补丁点，不依赖固定偏移，因此新版通常能直接适配；下表只记录**实际跑过**的组合。
+
+| agy 版本 | 补丁自动定位 | 对话 / 读写 | 执行命令 | 构建 HAP |
+|---|---|---|---|---|
+| **1.5.14** | ✅ | ✅ | ✅ | 未复测（命令执行已测） |
+| **1.5.13** | ✅ | ✅ | ✅ | ✅ `clean` 5.6s + `build` 18.1s |
+| 其他版本 | 预期可用 | — | — | — |
+
+已验证的具体能力（1.5.13 / nextPDF）：
 
 - 读代码：正确识别 Hvigor + ohpm、Stage 模型、`entry` 模块、`EntryAbility`
 - 执行命令：`git status`、`ls`、构建脚本
-- 全量构建：`clean` 5.6s + `build` 18.1s（CompileArkTS 7.3s）→ 产出签名 HAP
+- 全量构建：`CompileArkTS` 7.3s，33 个任务 32 executed → 产出签名 HAP
+
+---
+
+## FAQ
+
+**能装在鸿蒙手机 / 平板上吗？**
+未测试。沙箱限制和 PC 一致，理论上可行，但没有设备验过，别当承诺。
+
+**为什么必须关掉沙箱？**
+鸿蒙内核对 `clone(CLONE_NEW*)` 直接发 SIGSYS 杀进程，agy 的降级逻辑拿不到错误码，只能整个跳过沙箱。
+
+**会被 Google 封号吗？**
+不会。用的是你本人账号、官方端点和官方 CLI，行为与官方版本一致，只是二进制被打了补丁。
+
+**升级会不会坏？**
+会。升级必须重新打补丁并签名，`check-update.sh` 能提前告诉你有没有新版；升级用 `install.sh --force`，不要用 `agy update`。
+
+**和官方 CLI 有什么差别？**
+没有沙箱隔离、没有工具调用确认、不能自动更新。功能本身一致。
+
+**为什么不 fork 一份自己维护？**
+agy 是闭源二进制，没有源码可 fork；只能做二进制补丁。
 
 ---
 

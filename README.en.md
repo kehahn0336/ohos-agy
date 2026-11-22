@@ -1,5 +1,7 @@
 # ohos-agy
 
+![license](assets/badges/license.svg) ![platform](assets/badges/platform.svg) ![agy](assets/badges/agy-version.svg)
+
 [简体中文](README.md) | **English**
 
 > **Unofficial port that makes Google Antigravity CLI (`agy`) run on HarmonyOS PC (aarch64).**
@@ -42,6 +44,23 @@ $ agy -p "run echo hello"
 Command exited with code 0.
 Command output:
 hello
+```
+
+---
+
+## What it looks like
+
+A real session (agy 1.5.14, HarmonyOS PC, nextPDF project) — not a mock-up:
+
+```console
+$ agy -p "build the app with assembleHap and tell me the result"
+
+> ohpm install done (0s 120ms)
+> hvigor Finished :entry:assembleHap... after 1 ms
+> hvigor BUILD SUCCESSFUL in 3 s 244 ms
+  33 tasks: 14 executed, 19 up-to-date
+
+artifact: app/entry/build/default/outputs/default/entry-default-signed.hap (261 KB)
 ```
 
 ---
@@ -110,9 +129,10 @@ ohos-agy/
 │   ├── verify.sh
 │   ├── repatch.py            # locates patch points by string search
 │   └── probe_seccomp.py      # enumerates syscalls blocked by seccomp
-└── templates/
-    ├── agy.launcher.sh
-    └── zshrc.snippet
+├── templates/
+│   ├── agy.launcher.sh
+│   └── zshrc.snippet
+└── assets/badges/                             # local SVG badges (no shields.io)
 ```
 
 > Detailed docs are written in Chinese. If you need any of them in English, open an issue.
@@ -121,11 +141,43 @@ ohos-agy/
 
 ---
 
-## Verified capabilities (against the nextPDF project)
+## Version compatibility
+
+`repatch.py` locates patch points by string search rather than fixed offsets, so new builds usually just work. Only combinations actually exercised are listed.
+
+| agy version | Auto-located patch | Chat / file I/O | Shell commands | HAP build |
+|---|---|---|---|---|
+| **1.5.14** | ✅ | ✅ | ✅ | not re-tested (commands verified) |
+| **1.5.13** | ✅ | ✅ | ✅ | ✅ `clean` 5.6s + `build` 18.1s |
+| others | expected | — | — | — |
+
+Verified in detail (1.5.13 / nextPDF):
 
 - Code reading: correctly identified Hvigor + ohpm, the Stage model, the `entry` module and `EntryAbility`
 - Command execution: `git status`, `ls`, build scripts
-- Full build: `clean` 5.6s + `build` 18.1s (`CompileArkTS` 7.3s) → signed HAP produced
+- Full build: `CompileArkTS` 7.3s, 33 tasks with 32 executed → signed HAP produced
+
+---
+
+## FAQ
+
+**Does it work on HarmonyOS phones / tablets?**
+Untested. The sandbox restriction is the same as on PC, so it should in principle — but no device was tried. Don't treat it as a promise.
+
+**Why must the sandbox be disabled?**
+The HarmonyOS kernel replies to `clone(CLONE_NEW*)` with SIGSYS and kills the process. `agy`'s fallback logic never gets an error code to react to, so the sandbox has to be skipped entirely.
+
+**Can Google ban my account for this?**
+No. You use your own account, Google's own endpoints and the official CLI. Behaviour is identical to an unpatched install; only the binary is patched.
+
+**Will an upgrade break it?**
+Yes. Upgrading requires re-patching and re-signing. `check-update.sh` tells you when a new build exists; upgrade with `install.sh --force`, never with `agy update`.
+
+**How does it differ from the official CLI?**
+No sandbox isolation, no tool-call confirmation, no auto-update. Functionality is otherwise the same.
+
+**Why not fork and maintain it yourself?**
+`agy` is a closed-source binary — there is no source to fork. Binary patching is the only option.
 
 ---
 
