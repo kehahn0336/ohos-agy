@@ -1,0 +1,7 @@
+# 追加到 ~/.zshrc（install.sh 会自动写，这里留一份备查）
+
+# >>> ohos-agy >>>
+# ~/opt/bin 里放的是 agy 启动器 + 自签名的 bash。
+# agy 用 LookPath 找 bash，而 HAP bundle 里的 bash 对第三方 ELF 会 exec 拒绝。
+export PATH="$HOME/opt/bin:$PATH"
+# <<< ohos-agy <<<

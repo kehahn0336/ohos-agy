@@ -1,0 +1,28 @@
+# 研究缓存：官方包体、解包产物、抓取的文档，体积大且属 Google 版权内容，不入库
+.research/
+.cache/
+research-cache/
+
+# 下载包与构建产物
+*.tar.gz
+*.tar.xz
+*.tgz
+*.zip
+*.hap
+*.hsp
+*.app
+*.so
+*.bin
+
+# 临时与日志
+*.log
+*.tmp
+*.bak
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# 本地覆盖
+.env
+.env.local
