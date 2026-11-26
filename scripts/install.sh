@@ -13,7 +13,27 @@ FORCE=${1:-}
 
 PY=$(command -v python3 2>/dev/null || true)
 [ -n "$PY" ] || PY=/data/storage/el1/bundle/libs/arm64/python/bin/python3
-SIGN=/data/service/hnp/bin/binary-sign-tool
+# 签名器：鸿蒙 PC 自带，但 2026-11 的 OTA 之后可能消失（/data/service/hnp/bin 被重写）
+# 允许用 BINARY_SIGN_TOOL 覆盖；否则按候选路径依次找
+find_signer() {
+  if [ -n "${BINARY_SIGN_TOOL:-}" ]; then
+    [ -x "$BINARY_SIGN_TOOL" ] && { printf '%s' "$BINARY_SIGN_TOOL"; return 0; }
+    return 1
+  fi
+  for c in \
+    /data/service/hnp/bin/binary-sign-tool \
+    "$HOME/opt/bin/binary-sign-tool" \
+    /system/bin/binary-sign-tool \
+    /vendor/bin/binary-sign-tool \
+    "$HOME/deveco_tools/sdk/default/openharmony/toolchains/binary-sign-tool" \
+    /data/service/hnp/hmos-clt.org/hmos-clt_1.0.0/sdk/default/openharmony/toolchains/binary-sign-tool
+  do
+    [ -x "$c" ] && { printf '%s' "$c"; return 0; }
+  done
+  return 1
+}
+
+SIGN=$(find_signer || true)
 # 鸿蒙上 PATH 里可能有 rm 的 shim（#!/bin/bash，鸿蒙没有 /bin/bash），优先用 toybox 的
 RM=/usr/bin/rm
 [ -x "$RM" ] || RM=rm
@@ -22,7 +42,29 @@ PLATFORM="linux_arm64_musl"
 
 say() { printf '\033[1m==> %s\033[0m\n' "$1"; }
 
-[ -x "$SIGN" ] || { echo "缺少 $SIGN（鸿蒙 PC 自带），无法签名" >&2; exit 1; }
+if [ -z "$SIGN" ]; then
+  cat >&2 <<'EOF'
+缺少 binary-sign-tool（鸿蒙需要它给 ELF 自签名，缺了就无法安装/更新）。
+
+系统 OTA 之后 /data/service/hnp/bin 被重写，这个工具可能被移除。三种恢复方式：
+
+  1) 从 DevEco Studio 的 SDK 拷一份到设备（推荐）：
+       PC 上路径：<DevEco>/sdk/default/openharmony/toolchains/binary-sign-tool
+       hdc file send binary-sign-tool /data/local/tmp/
+       hdc shell "mkdir -p /storage/Users/currentUser/opt/bin && \
+                  cp /data/local/tmp/binary-sign-tool /storage/Users/currentUser/opt/bin/ && \
+                  chmod +x /storage/Users/currentUser/opt/bin/binary-sign-tool"
+     本脚本会自动在 ~/opt/bin 里找。
+
+  2) 手动指定路径：
+       BINARY_SIGN_TOOL=/path/to/binary-sign-tool bash scripts/install.sh --force
+
+  3) 从另一台还没升级的鸿蒙 PC 上拷同路径文件过来。
+
+注意：已有安装（$HOME/opt/agy/agy）不受影响，仍可正常使用；本脚本只是拒绝在无法签名时覆盖它。
+EOF
+  exit 1
+fi
 [ -x "$PY" ]   || { echo "缺少 python3" >&2; exit 1; }
 
 if [ -x "$AGY_DIR/agy" ] && [ "$FORCE" != "--force" ]; then

@@ -9,6 +9,7 @@
 | `zsh: invalid system call (core dumped)` | 159 | 进了命名空间沙箱 | 用启动器（内含 `--dangerously-skip-permissions`） |
 | `run bash: fork/exec .../bundle/.../bash: permission denied` | 0（工具内失败） | PATH 里的 bash 在 HAP bundle 里 | 自签名 bash 放 `~/opt/bin` 并前置 PATH |
 | `Permission denied` 直接执行任何 ELF | 126 | 该 ELF 没签名 | `binary-sign-tool sign -selfSign 1` |
+| `缺少 binary-sign-tool`（安装脚本直接退出） | 1 | **系统 OTA 后 `/data/service/hnp/bin` 被重写**，工具被移除（2026-11-26 实测） | 从 DevEco SDK 的 `toolchains/` 拷一份到 `~/opt/bin/`，脚本会自动发现；或 `BINARY_SIGN_TOOL=/path bash scripts/install.sh --force` |
 | `timeout: exec ...: Operation not permitted` | 126 | 二进制放在 `/tmp` 下 | 移到 `$HOME/**` 再执行 |
 | `exec format error` | 126 | 架构不对（下了 x86 版） | 用 `linux_arm64_musl` manifest |
 | `Eligibility check failed ... EOF` | 1 | 网络到 `*.googleapis.com` 抖动 | 直接重试，与移植无关 |
