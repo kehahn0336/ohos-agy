@@ -166,7 +166,7 @@ ohos-agy/
 
 | agy version | Auto-located patch | Chat / file I/O | Shell commands | HAP build |
 |---|---|---|---|---|
-| **1.5.18** | ✅ | not re-tested | not re-tested | not re-tested (`agy --version` = 1.5.18 after install) |
+| **1.5.18** | ✅ | ✅ | ✅ | not re-tested |
 | **1.5.14** | ✅ | ✅ | ✅ | not re-tested (commands verified) |
 | **1.5.13** | ✅ | ✅ | ✅ | ✅ `clean` 5.6s + `build` 18.1s |
 | others | expected | — | — | — |
