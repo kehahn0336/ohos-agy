@@ -23,6 +23,8 @@ find_signer() {
   for c in \
     /data/service/hnp/bin/binary-sign-tool \
     /data/service/hnp/hmos-clt.org/*/sdk/default/openharmony/toolchains/lib/binary-sign-tool \
+    "$HOME/command-line-tools/sdk/default/openharmony/toolchains/lib/binary-sign-tool" \
+    "$HOME/command-line-tools/sdk/default/openharmony/toolchains/binary-sign-tool" \
     /data/service/hnp/hmos-clt.org/*/sdk/default/openharmony/toolchains/binary-sign-tool \
     "$HOME/opt/bin/binary-sign-tool" \
     "$HOME/deveco_tools/sdk/default/openharmony/toolchains/lib/binary-sign-tool" \
