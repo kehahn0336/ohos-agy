@@ -83,7 +83,26 @@ bash scripts/verify.sh              # five local self-checks
 5. Generates the launcher `~/opt/bin/agy`
 6. Appends the PATH entry to `~/.zshrc` (skipped if already present)
 
-Dependencies: `curl`, `tar`, `python3`, `/data/service/hnp/bin/binary-sign-tool` (the last two ship with HarmonyOS PC).
+Dependencies: `curl`, `tar`, `python3`, `binary-sign-tool` (the last two ship with HarmonyOS PC).
+
+### About binary-sign-tool
+
+HarmonyOS requires every ELF to be signed. `install.sh` looks for the signer in this order:
+
+```
+~/command-line-tools/sdk/default/openharmony/toolchains/lib/binary-sign-tool   ← preferred
+~/opt/bin/binary-sign-tool
+/data/service/hnp/hmos-clt.org/*/sdk/default/openharmony/toolchains/lib/binary-sign-tool
+/data/service/hnp/bin/binary-sign-tool
+```
+
+**The 2026-11-26 OTA removed the tool from the last path.** The first two are therefore preferred now. You can also point at it explicitly:
+
+```sh
+BINARY_SIGN_TOOL=/path/to/binary-sign-tool bash scripts/install.sh --force
+```
+
+Note: the copy under `/data/service/hnp` only runs because that directory is trusted — copying it elsewhere fails with `Operation not permitted`. The `command-line-tools` build is properly signed and can live in `~/opt/bin`. Both produce byte-identical signatures.
 
 `check-update.sh` exit codes: `0` up to date, `10` newer version available, `2` query failed — safe to run from cron.
 
@@ -147,6 +166,7 @@ ohos-agy/
 
 | agy version | Auto-located patch | Chat / file I/O | Shell commands | HAP build |
 |---|---|---|---|---|
+| **1.5.18** | ✅ | not re-tested | not re-tested | not re-tested (`agy --version` = 1.5.18 after install) |
 | **1.5.14** | ✅ | ✅ | ✅ | not re-tested (commands verified) |
 | **1.5.13** | ✅ | ✅ | ✅ | ✅ `clean` 5.6s + `build` 18.1s |
 | others | expected | — | — | — |

@@ -85,7 +85,26 @@ bash scripts/verify.sh           # 五项本地自检
 5. 生成启动器 `~/opt/bin/agy`
 6. 往 `~/.zshrc` 追加 PATH（已有则跳过）
 
-依赖：`curl`、`tar`、`python3`、`/data/service/hnp/bin/binary-sign-tool`（后两个鸿蒙 PC 自带）。
+依赖：`curl`、`tar`、`python3`、`binary-sign-tool`（后两个鸿蒙 PC 自带）。
+
+### 关于 binary-sign-tool
+
+鸿蒙要求所有 ELF 带签名，`install.sh` 会自动在下列位置查找签名器：
+
+```
+~/command-line-tools/sdk/default/openharmony/toolchains/lib/binary-sign-tool   ← 推荐
+~/opt/bin/binary-sign-tool
+/data/service/hnp/hmos-clt.org/*/sdk/default/openharmony/toolchains/lib/binary-sign-tool
+/data/service/hnp/bin/binary-sign-tool
+```
+
+**2026-11-26 的 OTA 把最后一条路径下的工具删掉了**，所以现在优先用前两条。也可以显式指定：
+
+```sh
+BINARY_SIGN_TOOL=/path/to/binary-sign-tool bash scripts/install.sh --force
+```
+
+注意：系统目录里那份**依赖路径信任**，拷出来会 `Operation not permitted`；`command-line-tools` 那份自带签名，可以放 `~/opt/bin` 长期使用。两者签名结果逐字节一致。
 
 `check-update.sh` 的退出码：`0` 已最新，`10` 有新版本，`2` 查询失败 —— 可以直接写进定时脚本。
 
@@ -146,6 +165,7 @@ ohos-agy/
 
 | agy 版本 | 补丁自动定位 | 对话 / 读写 | 执行命令 | 构建 HAP |
 |---|---|---|---|---|
+| **1.5.18** | ✅ | 未复测 | 未复测 | 未复测（装完即 `agy --version` = 1.5.18） |
 | **1.5.14** | ✅ | ✅ | ✅ | 未复测（命令执行已测） |
 | **1.5.13** | ✅ | ✅ | ✅ | ✅ `clean` 5.6s + `build` 18.1s |
 | 其他版本 | 预期可用 | — | — | — |
