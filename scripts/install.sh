@@ -22,11 +22,12 @@ find_signer() {
   fi
   for c in \
     /data/service/hnp/bin/binary-sign-tool \
+    /data/service/hnp/hmos-clt.org/*/sdk/default/openharmony/toolchains/lib/binary-sign-tool \
+    /data/service/hnp/hmos-clt.org/*/sdk/default/openharmony/toolchains/binary-sign-tool \
     "$HOME/opt/bin/binary-sign-tool" \
+    "$HOME/deveco_tools/sdk/default/openharmony/toolchains/lib/binary-sign-tool" \
     /system/bin/binary-sign-tool \
-    /vendor/bin/binary-sign-tool \
-    "$HOME/deveco_tools/sdk/default/openharmony/toolchains/binary-sign-tool" \
-    /data/service/hnp/hmos-clt.org/hmos-clt_1.0.0/sdk/default/openharmony/toolchains/binary-sign-tool
+    /vendor/bin/binary-sign-tool
   do
     [ -x "$c" ] && { printf '%s' "$c"; return 0; }
   done
